@@ -1,7 +1,9 @@
+closest = lambda x: round(x / 20) * 20
+
 name = "Minesweeper"
-width = 400
-height = 600
-difficulty = "easy"  # easy, medium or hard
+width = closest(1003)
+height = closest(609)
+difficulty = "medium"  # easy, medium or hard
 
 coords = (
     (-1, -1), (0, -1), (1, -1),
