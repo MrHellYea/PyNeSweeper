@@ -1,8 +1,8 @@
-closest = lambda x: round(x / 20) * 20
+closest = lambda x: max(200, round(x / 20) * 20)
 
 name = "Minesweeper"
-width = closest(1003)
-height = closest(609)
+width = closest(60)
+height = closest(60)
 difficulty = "medium"  # easy, medium or hard
 
 coords = (
@@ -15,8 +15,8 @@ fps = 60
 
 diff_linker = {
     "easy": 0.05,
-    "medium": 0.10,
-    "hard": 0.15
+    "medium": 0.08,
+    "hard": 0.12
 }
 
 numbers = {
