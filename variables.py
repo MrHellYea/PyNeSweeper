@@ -1,23 +1,20 @@
-from functions import initialize
-
-
 name = "Minesweeper"
 width = 400
 height = 600
 difficulty = "easy"  # easy, medium or hard
 
-window = initialize(
-            name=name,
-            width=width,
-            height=height
-        )
+coords = (
+    (-1, -1), (0, -1), (1, -1),
+    (-1, 0), (1, 0),
+    (-1, 1), (0, 1), (1, 1),
+)
 
 fps = 60
 
 diff_linker = {
-    "easy": 0.02,
-    "medium": 0.05,
-    "hard": 0.10
+    "easy": 0.05,
+    "medium": 0.10,
+    "hard": 0.15
 }
 
 numbers = {

@@ -4,9 +4,7 @@ from random import sample
 import pygame
 
 from variables import diff_linker, numbers
-from variables import width, height
-from variables import window
-from functions import update
+from variables import width, height, coords
 
 
 class Text():
@@ -14,7 +12,7 @@ class Text():
         self.text = text
         self.pos = pos
 
-    def draw(self):
+    def draw(self, window):
         window.blit(
             self.text,
             self.pos
@@ -30,7 +28,7 @@ class Tile():
         self.around = around
         self.locked = False
 
-    def draw(self):
+    def draw(self, window):
         pygame.draw.rect(
             surface=window,
             color=self.color,
@@ -40,14 +38,15 @@ class Tile():
 
 
 class Board():
-    def __init__(self, diff):
+    def __init__(self, diff, window):
         self.diff = diff
         self.squares = width * height // 400
         self.amount = round(self.squares * diff_linker[self.diff])
         self.grid = self.build_grid()
         self.found = 0
         self.objects = []
-        self.draw()
+        self.window = window
+        self.draw(self.window)
 
     def build_grid(self):
         bombs = sample(
@@ -60,7 +59,7 @@ class Board():
         for row in range(height // 20):
             row = []
 
-            for column in range(width // 20):
+            for _ in range(width // 20):
                 value = 0
 
                 if counter in bombs:
@@ -72,12 +71,12 @@ class Board():
 
         return grid
 
-    def draw(self):
+    def draw(self, window):
         x, y = 0, 0
         window.fill((30, 30, 30))
 
         for row in self.grid:
-            for column in row:
+            for _ in row:
                 self.objects.append(
                     Tile(
                         color=(200, 200, 200),
@@ -94,11 +93,6 @@ class Board():
 
     def get_surroundings(self, x, y):
         count = 0
-        coords = (
-            (-1, -1), (0, -1), (1, -1),
-            (-1, 0), (1, 0),
-            (-1, 1), (0, 1), (1, 1),
-        )
 
         for x2, y2 in coords:
             if 0 <= y + y2 < len(self.grid) and \
@@ -143,14 +137,10 @@ class Board():
                     numbers[index.around]
                 )
                 self.objects.append(Text(text, (x * 20 + 5, y * 20 - 2)))
+                return
 
-                if chain:
-                    return
-
-            self.discover(x - 1, y, True)
-            self.discover(x + 1, y, True)
-            self.discover(x, y - 1, True)
-            self.discover(x, y + 1, True)
+            for x2, y2 in coords:
+                self.discover(x + x2, y + y2, True)
 
     def check_win(self):
         if self.found == self.squares - self.amount:
@@ -174,9 +164,12 @@ class Board():
         self.reset()
 
     def reset(self):
-        update(self.objects)
+        for object_ in self.objects:
+            object_.draw(self.window)
+        pygame.display.update()
         time.sleep(3)
+
         self.grid = self.build_grid()
         self.found = 0
         self.objects = []
-        self.draw()
+        self.draw(self.window)
